@@ -1,6 +1,6 @@
-## Monte Carlo Simulation Visualiser
-This small web application can be used to explore a Monte Carlo simulation to estimate
-the percolation threshold.
+## Monte Carlo Simulation Visualizer
+This small web application can be used to visualize a Monte Carlo simulation that estimates
+the percolation threshold of an n-by-n grid.
 
 ### What is percolation
 Percolation is an abstract process that can be used to model different physical phenomena.
