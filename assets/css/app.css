@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300&display=swap');
+* {
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background-color: white;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.item {
+    flex-grow: 1;
+}
+
+#grid {
+    border: 1px solid #031927;
+}
