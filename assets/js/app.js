@@ -72,9 +72,3 @@ function renderSites() {
 }
 
 setInterval(renderSites, 100)
-
-let graph = new WeightedQuickUnionUF(3)
-
-graph.union(1, 2)
-
-console.log(graph.find(1) == graph.find(2))

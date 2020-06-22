@@ -89,9 +89,6 @@ class Percolation {
     open(row, col) {
         this.validate(row, col)
         var id = this.findId(row, col)
-
-        console.log(id)
-
         if (!this.sitesStatus[id]) {
             this.noOfOpenSites++
             this.sitesStatus[id] = true
@@ -114,7 +111,6 @@ class Percolation {
         }
 
         if (row == 1) {
-            console.log("here")
             this.graph.union(id, 0);
         }
 
