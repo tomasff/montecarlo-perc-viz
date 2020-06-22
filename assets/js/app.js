@@ -6,9 +6,9 @@ const colorOpen = "white"
 const colorClosed = "#2D2D34"
 const colorFull = "#499167"
 
-let n = 3
+let n = 20
 
-let percolation = new Percolation(n)
+let simulation = new MonteCarloSimulation(n, 30)
 
 function squareSize(n) {
     return 600 / n
@@ -58,6 +58,9 @@ function renderSites() {
 
     let sqSize = squareSize(n)
 
+    simulation.push()
+    let percolation = simulation.getCurrentPercolation()
+
     for (var row = 1; row <= n; row++) {
         for (var col = 1; col <= n; col++) {
             if (percolation.isFull(row, col)) {
@@ -71,4 +74,4 @@ function renderSites() {
     }
 }
 
-setInterval(renderSites, 100)
+setInterval(renderSites, 5)

@@ -137,13 +137,18 @@ class Percolation {
         return this.graph.find(0) == this.graph.find(this.findId(row, col))
     }
 
-    noOfOpenSites() {
+    getNumberOfOpenSites() {
         return this.noOfOpenSites
     }
 
     percolates() {
         return this.graph.find(0) == this.graph.find(this.graphSize - 1)
     }
+}
+
+
+function generateRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 class MonteCarloSimulation {
@@ -153,7 +158,45 @@ class MonteCarloSimulation {
         }
 
         this.trials = trials
+        this.gridSize = gridSize
         this.pStarEstimate = []
+        this.currentTrial = 0
+        this.currentPercolation = new Percolation(this.gridSize)
     }
 
+    // Every X ms
+    // openRandom
+        // if percolates
+            // Save pStar
+            // create new percolation instance
+
+    openRandom() {
+        let row = generateRandomInt(1, n)
+        let col = generateRandomInt(1, n)
+
+        this.currentPercolation.open(row, col)
+    }
+
+    push() {
+        if (this.hasFinished()) {
+            return
+        }
+
+        this.openRandom()
+
+        if (this.currentPercolation.percolates()) {
+            this.pStarEstimate[this.currentTrial] = this.currentPercolation.getNumberOfOpenSites() / (this.gridSize * this.gridSize)
+            
+            this.currentTrial++
+            this.currentPercolation = new Percolation(this.gridSize)
+        }
+    }
+
+    hasFinished() {
+        return this.currentTrial == (this.trials - 1)
+    }
+
+    getCurrentPercolation() {
+        return this.currentPercolation
+    }
 }
