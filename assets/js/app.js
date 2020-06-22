@@ -1,12 +1,17 @@
 const grid = document.getElementById("grid")
-const gridSizeSlider = document.getElementById("gridSizeSlider") 
 const gridCtx = grid.getContext("2d")
+
+const gridSizeSlider = document.getElementById("gridSizeSlider") 
+const simulationSpeedSlider = document.getElementById("simulationSpeedSlider")
+const trialsSlider = document.getElementById("trialsSlider")
 
 const colorOpen = "white"
 const colorClosed = "#2D2D34"
 const colorFull = "#499167"
 
 let n = 20
+let simulationSpeed = 5
+let trials = 10
 
 let simulation = new MonteCarloSimulation(n, 30)
 
@@ -33,7 +38,7 @@ function getRowCol(x, y) {
     }
 }
 
-grid.addEventListener("click", function (event) {
+/*grid.addEventListener("click", function (event) {
     var bounding = grid.getBoundingClientRect()
 
     var x = event.clientX - bounding.left
@@ -42,7 +47,7 @@ grid.addEventListener("click", function (event) {
     var coords = getRowCol(x, y)
 
     percolation.open(coords.row, coords.col)
-})
+})*/
 
 function clearGrid() {
     gridCtx.clearRect(0, 0, grid.width, grid.height)
@@ -50,7 +55,20 @@ function clearGrid() {
 
 gridSizeSlider.addEventListener("input", function () {
     n = this.value
-    percolation = new Percolation(n)
+    simulation = new MonteCarloSimulation(n, trials)
+})
+
+simulationSpeedSlider.addEventListener("input", function() {
+    simulationSpeed = this.value
+
+    // Reset interval and start again
+    window.clearInterval(renderingInterval)
+    renderingInterval = setInterval(renderSites, simulationSpeed)
+})
+
+trialsSlider.addEventListener("input", function () {
+    trials = this.value
+    simulation = new MonteCarloSimulation(n, trials)
 })
 
 function renderSites() {
@@ -74,4 +92,4 @@ function renderSites() {
     }
 }
 
-setInterval(renderSites, 5)
+var renderingInterval = setInterval(renderSites, simulationSpeed)
