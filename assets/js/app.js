@@ -38,17 +38,6 @@ function getRowCol(x, y) {
     }
 }
 
-/*grid.addEventListener("click", function (event) {
-    var bounding = grid.getBoundingClientRect()
-
-    var x = event.clientX - bounding.left
-    var y = event.clientY - bounding.top
-
-    var coords = getRowCol(x, y)
-
-    percolation.open(coords.row, coords.col)
-})*/
-
 function clearGrid() {
     gridCtx.clearRect(0, 0, grid.width, grid.height)
 }

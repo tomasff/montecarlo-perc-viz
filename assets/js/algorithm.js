@@ -199,4 +199,36 @@ class MonteCarloSimulation {
     getCurrentPercolation() {
         return this.currentPercolation
     }
+
+    getMean() {
+        if (!this.hasFinished()) {
+            return null
+        }
+
+        return this.pStarEstimate.reduce((acc, current) => (acc + current)) / this.trials
+    }
+
+    getStdDev() {
+        if (!this.hasFinished()) {
+            return null
+        }
+
+        return Math.sqrt(this.pStarEstimate.reduce((acc, current) => acc + Math.pow(current - this.getMean(), 2)) / this.trials)
+    }
+
+    getConfidenceHi() {
+        if (!this.hasFinished()) {
+            return null
+        }
+
+        return this.getMean() + (1.96 * this.getStdDev() / Math.sqrt(this.trials))
+    }
+
+    getConfidenceLo() {
+        if (!this.hasFinished()) {
+            return null
+        }
+
+        return this.getMean() - (1.96 * this.getStdDev() / Math.sqrt(this.trials))
+    }
 }
