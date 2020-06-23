@@ -1,0 +1,3 @@
+- [An Introduction to Percolation and Many-body Physics by Computer](http://fafnir.phyast.pitt.edu/myjava/perc/percTest.html)
+- [Case Study: Percolation](https://introcs.cs.princeton.edu/java/24percolation/)
+- [Programming Assignment 1: Percolation](https://coursera.cs.princeton.edu/algs4/assignments/percolation/specification.php)
