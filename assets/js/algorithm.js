@@ -95,27 +95,27 @@ class Percolation {
         }
 
         if (row > 1) {
-            this.unionIfOpen(id, row - 1, col);
+            this.unionIfOpen(id, row - 1, col)
         }
 
         if (row < n) {
-            this.unionIfOpen(id, row + 1, col);
+            this.unionIfOpen(id, row + 1, col)
         }
 
         if (col > 1) {
-            this.unionIfOpen(id, row, col - 1);
+            this.unionIfOpen(id, row, col - 1)
         }
 
         if (col < n) {
-            this.unionIfOpen(id, row, col + 1);
+            this.unionIfOpen(id, row, col + 1)
         }
 
         if (row == 1) {
-            this.graph.union(id, 0);
+            this.graph.union(id, 0)
         }
 
         if (row == n) {
-            this.graph.union(id, this.graphSize - 1);
+            this.graph.union(id, this.graphSize - 1)
         }
     }
 
