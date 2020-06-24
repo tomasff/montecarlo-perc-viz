@@ -13,10 +13,6 @@ body {
     justify-content: space-evenly;
 }
 
-.item {
-    flex-grow: 1;
-}
-
 #grid {
     border: 1px solid #031927;
 }
