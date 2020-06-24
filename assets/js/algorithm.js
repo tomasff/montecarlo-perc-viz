@@ -55,6 +55,11 @@ class WeightedQuickUnionUF {
     }
 }
 
+function bernoulli(p) {
+    let randomProb = Math.random()
+    return (randomProb < p)
+}
+
 /**
  * Percolation simulation using the weighted quick union find graph
  */
@@ -144,37 +149,51 @@ class Percolation {
     percolates() {
         return this.graph.find(0) == this.graph.find(this.graphSize - 1)
     }
-}
 
+    static generateRandom(n, p) {
+        let percolation = new Percolation(n)
+
+        for (var row = 1; row <= n; row++) {
+            for (var col = 1; col <= n; col++) {
+                if (bernoulli(p)) {
+                    percolation.open(row, col)
+                }
+            }
+        }
+
+        return percolation
+    }
+}
 
 function generateRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 class MonteCarloSimulation {
-    constructor(gridSize, trials) {
+    constructor(gridSize, trials, probability) {
         if (gridSize <= 0 || trials <= 0) {
             throw "The number of trials and grid size must be greater than 0!"
         }
 
         this.trials = trials
         this.gridSize = gridSize
-        this.pStarEstimate = []
         this.currentTrial = 0
-        this.currentPercolation = new Percolation(this.gridSize)
+        this.probability = probability
+        this.noPercolations = 0
+        this.currentPercolation = Percolation.generateRandom(this.gridSize, this.probability)
     }
 
-    // Every X ms
-    // openRandom
-        // if percolates
-            // Save pStar
-            // create new percolation instance
+    openNextSite() {
+        if (this.bernoulli()) {
+            this.currentPercolation.open(this.row, this.col)
+        }
 
-    openRandom() {
-        let row = generateRandomInt(1, n)
-        let col = generateRandomInt(1, n)
-
-        this.currentPercolation.open(row, col)
+        if (this.col == this.gridSize) {
+            this.col = 1
+            this.row++
+        } else {
+            this.col++
+        }
     }
 
     push() {
@@ -182,14 +201,12 @@ class MonteCarloSimulation {
             return
         }
 
-        this.openRandom()
-
         if (this.currentPercolation.percolates()) {
-            this.pStarEstimate[this.currentTrial] = this.currentPercolation.getNumberOfOpenSites() / (this.gridSize * this.gridSize)
-            
-            this.currentTrial++
-            this.currentPercolation = new Percolation(this.gridSize)
+            this.noPercolations++
         }
+
+        this.currentPercolation = Percolation.generateRandom(this.gridSize, this.probability)
+        this.currentTrial++
     }
 
     hasFinished() {
@@ -200,35 +217,7 @@ class MonteCarloSimulation {
         return this.currentPercolation
     }
 
-    getMean() {
-        if (!this.hasFinished()) {
-            return null
-        }
-
-        return this.pStarEstimate.reduce((acc, current) => (acc + current)) / this.trials
-    }
-
-    getStdDev() {
-        if (!this.hasFinished()) {
-            return null
-        }
-
-        return Math.sqrt(this.pStarEstimate.reduce((acc, current) => acc + Math.pow(current - this.getMean(), 2)) / this.trials)
-    }
-
-    getConfidenceHi() {
-        if (!this.hasFinished()) {
-            return null
-        }
-
-        return this.getMean() + (1.96 * this.getStdDev() / Math.sqrt(this.trials))
-    }
-
-    getConfidenceLo() {
-        if (!this.hasFinished()) {
-            return null
-        }
-
-        return this.getMean() - (1.96 * this.getStdDev() / Math.sqrt(this.trials))
+    getNumberOfPercolations() {
+        return this.noPercolations
     }
 }

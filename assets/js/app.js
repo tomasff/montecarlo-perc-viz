@@ -9,11 +9,12 @@ const colorOpen = "white"
 const colorClosed = "#2D2D34"
 const colorFull = "#499167"
 
-let n = 20
-let simulationSpeed = 5
-let trials = 10
+let n = 30
+let simulationSpeed = 1
+let trials = 40
+let prob = 0.01
 
-let simulation = new MonteCarloSimulation(n, 30)
+let simulation = new MonteCarloSimulation(n, trials, prob)
 
 function squareSize(n) {
     return 600 / n
@@ -29,22 +30,13 @@ function drawSite(row, col, size, color) {
     gridCtx.stroke()
 }
 
-function getRowCol(x, y) {
-    var sqSize = squareSize(n)
-    
-    return {
-        row: Math.floor(y / sqSize) + 1,
-        col: Math.floor(x / sqSize) + 1
-    }
-}
-
 function clearGrid() {
     gridCtx.clearRect(0, 0, grid.width, grid.height)
 }
 
 gridSizeSlider.addEventListener("input", function () {
     n = this.value
-    simulation = new MonteCarloSimulation(n, trials)
+    simulation = new MonteCarloSimulation(n, trials, prob)
 })
 
 simulationSpeedSlider.addEventListener("input", function() {
@@ -57,7 +49,7 @@ simulationSpeedSlider.addEventListener("input", function() {
 
 trialsSlider.addEventListener("input", function () {
     trials = this.value
-    simulation = new MonteCarloSimulation(n, trials)
+    simulation = new MonteCarloSimulation(n, trials, prob)
 })
 
 function renderSites() {
@@ -78,6 +70,12 @@ function renderSites() {
                 drawSite(row, col, sqSize, colorClosed)
             }
         }
+    }
+
+    if (simulation.hasFinished()) {
+        console.log("(" + prob + ", " + (simulation.getNumberOfPercolations() / trials) + ")")
+        prob += 0.01
+        simulation = new MonteCarloSimulation(n, trials, prob)
     }
 }
 
