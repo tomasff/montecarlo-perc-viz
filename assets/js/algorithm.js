@@ -170,7 +170,7 @@ function generateRandomInt(min, max) {
 }
 
 class MonteCarloSimulation {
-    constructor(gridSize, trials, probability) {
+    constructor(gridSize, trials) {
         if (gridSize <= 0 || trials <= 0) {
             throw "The number of trials and grid size must be greater than 0!"
         }
@@ -178,22 +178,9 @@ class MonteCarloSimulation {
         this.trials = trials
         this.gridSize = gridSize
         this.currentTrial = 0
-        this.probability = probability
-        this.noPercolations = 0
-        this.currentPercolation = Percolation.generateRandom(this.gridSize, this.probability)
-    }
-
-    openNextSite() {
-        if (this.bernoulli()) {
-            this.currentPercolation.open(this.row, this.col)
-        }
-
-        if (this.col == this.gridSize) {
-            this.col = 1
-            this.row++
-        } else {
-            this.col++
-        }
+        this.percolationProbs = []
+        this.numberPercolations = 0
+        this.currentProbability = 0
     }
 
     push() {
@@ -201,15 +188,29 @@ class MonteCarloSimulation {
             return
         }
 
-        if (this.currentPercolation.percolates()) {
-            this.noPercolations++
+        if (this.hasFinishedTrialsForProb()) {
+            let percolationProb = this.numberPercolations / this.trials
+            this.percolationProbs.push([this.currentProbability, percolationProb])
+
+            this.currentProbability += 0.01
+            this.currentTrial = 0
+            this.numberPercolations = 0
         }
 
-        this.currentPercolation = Percolation.generateRandom(this.gridSize, this.probability)
+        this.currentPercolation = Percolation.generateRandom(this.gridSize, this.currentProbability)
+
+        if (this.currentPercolation.percolates()) {
+            this.numberPercolations++
+        }
+
         this.currentTrial++
     }
 
     hasFinished() {
+        return this.currentProbability >= 1.0
+    }
+
+    hasFinishedTrialsForProb() {
         return this.currentTrial == (this.trials - 1)
     }
 
@@ -217,7 +218,7 @@ class MonteCarloSimulation {
         return this.currentPercolation
     }
 
-    getNumberOfPercolations() {
-        return this.noPercolations
+    getPercolationProbs() {
+        return this.percolationProbs
     }
 }

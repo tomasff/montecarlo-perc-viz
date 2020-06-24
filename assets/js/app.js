@@ -5,16 +5,53 @@ const gridSizeSlider = document.getElementById("gridSizeSlider")
 const simulationSpeedSlider = document.getElementById("simulationSpeedSlider")
 const trialsSlider = document.getElementById("trialsSlider")
 
+const graphMargin = {top: 30, right: 30, bottom: 30, left:30},
+      width = 600 - graphMargin.left - graphMargin.right,
+      height = 600 - graphMargin.top - graphMargin.bottom,
+      graph = d3.select("#graph")
+                .append("svg")
+                .attr("width", width + graphMargin.left + graphMargin.right)
+                .attr("height", height + graphMargin.top + graphMargin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + graphMargin.left + ", " + graphMargin.top + ")")
+    
+const x = d3.scaleLinear()
+            .range([0, width])
+            .domain([0, 1])
+
+graph.append("g")
+     .attr("transform", "translate(0," + height + ")")
+     .call(d3.axisBottom(x))
+
+const y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, 1])
+
+graph.append("g")
+     .call(d3.axisLeft(y))
+
+const line = d3.line()
+               .x(d => x(d[0]))
+               .y(d => y(d[1]))
+               .curve(d3.curveBundle.beta(1))
+
+graph.append("path")
+      .datum([])
+      .attr("id", "line")
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", line)
+
 const colorOpen = "white"
 const colorClosed = "#2D2D34"
 const colorFull = "#499167"
 
 let n = 30
 let simulationSpeed = 1
-let trials = 40
-let prob = 0.01
+let trials = 60
 
-let simulation = new MonteCarloSimulation(n, trials, prob)
+let simulation = new MonteCarloSimulation(n, trials)
 
 function squareSize(n) {
     return 600 / n
@@ -36,7 +73,7 @@ function clearGrid() {
 
 gridSizeSlider.addEventListener("input", function () {
     n = this.value
-    simulation = new MonteCarloSimulation(n, trials, prob)
+    simulation = new MonteCarloSimulation(n, trials)
 })
 
 simulationSpeedSlider.addEventListener("input", function() {
@@ -44,15 +81,15 @@ simulationSpeedSlider.addEventListener("input", function() {
 
     // Reset interval and start again
     window.clearInterval(renderingInterval)
-    renderingInterval = setInterval(renderSites, simulationSpeed)
+    renderingInterval = setInterval(pushSimulation, simulationSpeed)
 })
 
 trialsSlider.addEventListener("input", function () {
     trials = this.value
-    simulation = new MonteCarloSimulation(n, trials, prob)
+    simulation = new MonteCarloSimulation(n, trials)
 })
 
-function renderSites() {
+function pushSimulation() {
     clearGrid()
 
     let sqSize = squareSize(n)
@@ -72,11 +109,8 @@ function renderSites() {
         }
     }
 
-    if (simulation.hasFinished()) {
-        console.log("(" + prob + ", " + (simulation.getNumberOfPercolations() / trials) + ")")
-        prob += 0.01
-        simulation = new MonteCarloSimulation(n, trials, prob)
-    }
+    const data = simulation.getPercolationProbs()
+    graph.select("#line").attr("d", line(data))
 }
 
-var renderingInterval = setInterval(renderSites, simulationSpeed)
+var renderingInterval = setInterval(pushSimulation, simulationSpeed)
