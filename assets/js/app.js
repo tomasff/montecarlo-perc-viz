@@ -39,8 +39,8 @@ graph.append("path")
       .datum([])
       .attr("id", "line")
       .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
+      .attr("stroke", "#2D2D34")
+      .attr("stroke-width", 2.5)
       .attr("d", line)
 
 const colorOpen = "white"
