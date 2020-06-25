@@ -6,33 +6,33 @@ const simulationSpeedSlider = document.getElementById("simulationSpeedSlider")
 const trialsSlider = document.getElementById("trialsSlider")
 
 const graphMargin = {top: 30, right: 30, bottom: 30, left:30},
-      width = 600 - graphMargin.left - graphMargin.right,
-      height = 600 - graphMargin.top - graphMargin.bottom,
+      graphWidth = 600 - graphMargin.left - graphMargin.right,
+      graphHeight = 600 - graphMargin.top - graphMargin.bottom,
       graph = d3.select("#graph")
                 .append("svg")
-                .attr("width", width + graphMargin.left + graphMargin.right)
-                .attr("height", height + graphMargin.top + graphMargin.bottom)
+                .attr("width", graphWidth + graphMargin.left + graphMargin.right)
+                .attr("height", graphHeight + graphMargin.top + graphMargin.bottom)
             .append("g")
             .attr("transform", "translate(" + graphMargin.left + ", " + graphMargin.top + ")")
     
-const x = d3.scaleLinear()
-            .range([0, width])
+const xAxis = d3.scaleLinear()
+            .range([0, graphWidth])
             .domain([0, 1])
 
 graph.append("g")
-     .attr("transform", "translate(0," + height + ")")
-     .call(d3.axisBottom(x))
+     .attr("transform", "translate(0," + graphHeight + ")")
+     .call(d3.axisBottom(xAxis))
 
-const y = d3.scaleLinear()
-            .range([height, 0])
+const yAxis = d3.scaleLinear()
+            .range([graphHeight, 0])
             .domain([0, 1])
 
 graph.append("g")
-     .call(d3.axisLeft(y))
+     .call(d3.axisLeft(yAxis))
 
 const line = d3.line()
-               .x(d => x(d[0]))
-               .y(d => y(d[1]))
+               .x(d => xAxis(d[0]))
+               .y(d => yAxis(d[1]))
                .curve(d3.curveBundle.beta(1))
 
 graph.append("path")
