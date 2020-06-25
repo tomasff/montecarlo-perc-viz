@@ -2,7 +2,6 @@ const grid = document.getElementById("grid")
 const gridCtx = grid.getContext("2d")
 
 const gridSizeSlider = document.getElementById("gridSizeSlider") 
-const simulationSpeedSlider = document.getElementById("simulationSpeedSlider")
 const trialsSlider = document.getElementById("trialsSlider")
 
 const graphMargin = {top: 30, right: 30, bottom: 30, left:30},
@@ -48,8 +47,7 @@ const colorClosed = "#2D2D34"
 const colorFull = "#499167"
 
 let n = 30
-let simulationSpeed = 1
-let trials = 60
+let trials = 30
 
 let simulation = new MonteCarloSimulation(n, trials)
 
@@ -74,14 +72,6 @@ function clearGrid() {
 gridSizeSlider.addEventListener("input", function () {
     n = this.value
     simulation = new MonteCarloSimulation(n, trials)
-})
-
-simulationSpeedSlider.addEventListener("input", function() {
-    simulationSpeed = this.value
-
-    // Reset interval and start again
-    window.clearInterval(renderingInterval)
-    renderingInterval = setInterval(pushSimulation, simulationSpeed)
 })
 
 trialsSlider.addEventListener("input", function () {
@@ -111,6 +101,8 @@ function pushSimulation() {
 
     const data = simulation.getPercolationProbs()
     graph.select("#line").attr("d", line(data))
+
+    requestAnimationFrame(pushSimulation)
 }
 
-var renderingInterval = setInterval(pushSimulation, simulationSpeed)
+pushSimulation()
