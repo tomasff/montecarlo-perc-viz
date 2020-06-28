@@ -2,6 +2,8 @@
 This small web application can be used to visualize a Monte Carlo simulation that estimates
 the percolation threshold of an n-by-n grid.
 
+You can find the WIP demo [here](https://tomff.com/montecarlo-perc-viz/).
+
 ### What is percolation
 Percolation is an abstract process that can be used to model different physical phenomena.
 It can be used to model, for example, what fraction of materials need to be metallic so that a system is an electric conductor.
