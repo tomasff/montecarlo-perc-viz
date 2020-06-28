@@ -8,11 +8,53 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: 0.5fr 1fr 1fr;
+    grid-template-areas: 
+        "options grid graph"
+        "footer footer footer";
+    row-gap: 10px;
+}
+
+h1#title {
+    text-align: center;
+}
+
+label {
+    display: block;
+}
+
+input {
+    margin: .4rem 0;
+}
+
+#gridContainer {
+    grid-area: grid;
 }
 
 #grid {
     border: 1px solid #031927;
+}
+
+#about {
+    grid-area: about;
+}
+
+#graphContainer {
+    grid-area: graph;
+}
+
+#footer {
+    text-align: center;
+    grid-area: footer;
+}
+
+#footer p {
+    color: #a6a6a6;
+}
+
+#footer p a {
+    text-decoration: none;
+    color: #031927;
 }

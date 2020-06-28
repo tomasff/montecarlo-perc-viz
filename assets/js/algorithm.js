@@ -82,11 +82,11 @@ class Percolation {
     }
 
     findId(row, col) {
-        return (row - 1) * n + col
+        return (row - 1) * this.n + col
     }
 
     validate(row, col) {
-        if (row <= 0 || col <= 0 || row > n || col > n) {
+        if (row <= 0 || col <= 0 || row > this.n || col > this.n) {
             throw "Invalid site coordinates"
         }
     }
@@ -103,7 +103,7 @@ class Percolation {
             this.unionIfOpen(id, row - 1, col)
         }
 
-        if (row < n) {
+        if (row < this.n) {
             this.unionIfOpen(id, row + 1, col)
         }
 
@@ -111,7 +111,7 @@ class Percolation {
             this.unionIfOpen(id, row, col - 1)
         }
 
-        if (col < n) {
+        if (col < this.n) {
             this.unionIfOpen(id, row, col + 1)
         }
 
@@ -119,7 +119,7 @@ class Percolation {
             this.graph.union(id, 0)
         }
 
-        if (row == n) {
+        if (row == this.n) {
             this.graph.union(id, this.graphSize - 1)
         }
     }
