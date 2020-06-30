@@ -1,110 +1,53 @@
-const grid = document.getElementById("grid")
-const gridCtx = grid.getContext("2d")
-
 const gridSizeInput = document.getElementById("gridSize") 
 const trialsInput = document.getElementById("trials")
+const startBtn = document.getElementById("start")
+const stopBtn = document.getElementById("stop")
 
-const toggleSimulationBtn = document.getElementById("toggleSimulation")
-
-const graphMargin = {top: 30, right: 30, bottom: 30, left:30},
-      graphWidth = 600 - graphMargin.left - graphMargin.right,
-      graphHeight = 600 - graphMargin.top - graphMargin.bottom,
-      graph = d3.select("#graph")
-                .append("svg")
-                .attr("width", graphWidth + graphMargin.left + graphMargin.right)
-                .attr("height", graphHeight + graphMargin.top + graphMargin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + graphMargin.left + ", " + graphMargin.top + ")")
-    
-const xAxis = d3.scaleLinear()
-                .range([0, graphWidth])
-                .domain([0, 1])
-
-const yAxis = d3.scaleLinear()
-                .range([graphHeight, 0])
-                .domain([0, 1])
-
-const line = d3.line()
-               .x(d => xAxis(d[0]))
-               .y(d => yAxis(d[1]))
-               .curve(d3.curveBundle.beta(1))
+const graph = new GraphPlot("#graph")
+let running = false
+let grid, simulation
 
 const colors = {
     open: "white",
     closed: "#2D2D34",
     full: "#499167"
 }
-               
-let gridSize = 30
-               
-let simulationRunning = false
-let simulation
 
-function drawSite(row, col, size, color) {
-    let x = (col - 1) * size
-    let y = (row - 1) * size
+startBtn.onclick = () => {
+    let gridSize = gridSizeInput.value
 
-    gridCtx.beginPath()
-    gridCtx.fillStyle = color
-    gridCtx.fillRect(x, y, size, size)
-    gridCtx.stroke()
-}
-
-function clearGrid() {
-    gridCtx.clearRect(0, 0, grid.width, grid.height)
-}
-
-toggleSimulationBtn.onclick = () => {
-    gridSize = gridSizeInput.value
+    grid = new Grid("grid", gridSize)
     simulation = new MonteCarloSimulation(gridSize, trialsInput.value)
 
-    simulationRunning = !simulationRunning
+    running = true
     pushSimulation()
 }
 
+stopBtn.onclick = () => {
+    running = false
+}
+
 function pushSimulation() {
-    clearGrid()
-
-    let sqSize = 600 / gridSize
-
+    grid.clear()
     simulation.push()
+
     let percolation = simulation.getCurrentPercolation()
 
-    for (var row = 1; row <= gridSize; row++) {
-        for (var col = 1; col <= gridSize; col++) {
+    for (var row = 1; row <= grid.size; row++) {
+        for (var col = 1; col <= grid.size; col++) {
             if (percolation.isFull(row, col)) {
-                drawSite(row, col, sqSize, colors.full)
+                grid.drawSite(row, col, colors.full)
             } else if (percolation.isOpen(row, col)) {
-                drawSite(row, col, sqSize, colors.open)
+                grid.drawSite(row, col, colors.open)
             } else {
-                drawSite(row, col, sqSize, colors.closed)
+                grid.drawSite(row, col, colors.closed)
             }
         }
     }
 
-    const data = simulation.getPercolationProbs()
-    graph.select("#line").attr("d", line(data))
+    graph.update(simulation.getPercolationProbs())
 
-    if (simulationRunning) {
+    if (running) {
         requestAnimationFrame(pushSimulation)
     }
 }
-
-graph.append("g")
-     .attr("transform", "translate(0," + graphHeight + ")")
-     .call(d3.axisBottom(xAxis))
-
-graph.append("g")
-     .attr("transform", "translate(0," + graphHeight + ")")
-     .call(d3.axisBottom(xAxis))
-
-graph.append("g")
-     .call(d3.axisLeft(yAxis))
-
-graph.append("path")
-     .datum([])
-     .attr("id", "line")
-     .attr("fill", "none")
-     .attr("stroke", "#2D2D34")
-     .attr("stroke-width", 2.5)
-     .attr("d", line)

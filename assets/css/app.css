@@ -50,7 +50,7 @@ input {
     grid-area: footer;
 }
 
-#footer p {
+.text-muted {
     color: #a6a6a6;
 }
 

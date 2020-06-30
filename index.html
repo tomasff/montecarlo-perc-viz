@@ -16,7 +16,8 @@
                     <label for="trials">Trials</label>
                     <input type="number" min="3" max="60" value="30" id="trials">
                 </div>
-                <button id="toggleSimulation">Start/Stop</button>
+                <button id="start">Start</button>
+                <button id="stop">Stop</button>
             </div>
             <div id="gridContainer">
                 <h2>Grid</h2>
@@ -27,11 +28,14 @@
                 <div id="graph"></div>
             </div>
             <div id="footer">
-                <p><a href="https://github.com/tomasff/montecarlo-perc-viz">Source code</a> &#9679; by Tomás</p>
+                <p class="text-muted"><a href="https://github.com/tomasff/montecarlo-perc-viz">Source code</a> &#9679; by Tomás</p>
             </div>
         </div>
         <script src="https://d3js.org/d3.v4.js"></script>
+
         <script src="assets/js/algorithm.js"></script>
+        <script src="assets/js/graph.js"></script>
+        <script src="assets/js/grid.js"></script>
         <script src="assets/js/app.js"></script>
     </body>
 </html>
