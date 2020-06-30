@@ -4,7 +4,7 @@ const gridCtx = grid.getContext("2d")
 const gridSizeInput = document.getElementById("gridSize") 
 const trialsInput = document.getElementById("trials")
 
-const toggleSimulationBtn = document.getElementById("#toggleSimulation")
+const toggleSimulationBtn = document.getElementById("toggleSimulation")
 
 const graphMargin = {top: 30, right: 30, bottom: 30, left:30},
       graphWidth = 600 - graphMargin.left - graphMargin.right,
@@ -29,12 +29,13 @@ const line = d3.line()
                .y(d => yAxis(d[1]))
                .curve(d3.curveBundle.beta(1))
 
-const colorOpen = "white"
-const colorClosed = "#2D2D34"
-const colorFull = "#499167"
+const colors = {
+    open: "white",
+    closed: "#2D2D34",
+    full: "#499167"
+}
                
 let gridSize = 30
-let trials = 30
                
 let simulationRunning = false
 let simulation
@@ -53,8 +54,9 @@ function clearGrid() {
     gridCtx.clearRect(0, 0, grid.width, grid.height)
 }
 
-function toggleSimulation() {
-    simulation = new MonteCarloSimulation(gridSize, trials)
+toggleSimulationBtn.onclick = () => {
+    gridSize = gridSizeInput.value
+    simulation = new MonteCarloSimulation(gridSize, trialsInput.value)
 
     simulationRunning = !simulationRunning
     pushSimulation()
@@ -71,11 +73,11 @@ function pushSimulation() {
     for (var row = 1; row <= gridSize; row++) {
         for (var col = 1; col <= gridSize; col++) {
             if (percolation.isFull(row, col)) {
-                drawSite(row, col, sqSize, colorFull)
+                drawSite(row, col, sqSize, colors.full)
             } else if (percolation.isOpen(row, col)) {
-                drawSite(row, col, sqSize, colorOpen)
+                drawSite(row, col, sqSize, colors.open)
             } else {
-                drawSite(row, col, sqSize, colorClosed)
+                drawSite(row, col, sqSize, colors.closed)
             }
         }
     }
@@ -106,11 +108,3 @@ graph.append("path")
      .attr("stroke", "#2D2D34")
      .attr("stroke-width", 2.5)
      .attr("d", line)
-
-gridSizeInput.addEventListener("input", function () {
-    gridSize = this.value
-})
-
-trialsInput.addEventListener("input", function () {
-    trials = this.value
-})
